@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Automata Designer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <h1 class="brand-title"><i class="fas fa-project-diagram"></i> AUTOMATA</h1>
+            <p class="subtitle">By: Aina Naz (BSCS 6th)</p>
+            
+            <div class="tools">
+                <button onclick="setMode('addState')" class="btn tool-btn state-btn">
+                    <i class="fas fa-circle"></i> Add State
+                </button>
+                <button onclick="setMode('addTransition')" class="btn tool-btn arrow-btn">
+                    <i class="fas fa-long-arrow-alt-right"></i> Add Arrow
+                </button>
+                <button onclick="setMode('setStart')" class="btn tool-btn start-btn">
+                    <i class="fas fa-play"></i> Set Start
+                </button>
+                <button onclick="setMode('setFinal')" class="btn tool-btn final-btn">
+                    <i class="fas fa-bullseye"></i> Set Final
+                </button>
+                <button onclick="setMode('setTrap')" class="btn tool-btn trap-btn">
+                    <i class="fas fa-ban"></i> Set Reject
+                </button>
+                <button onclick="openRegexModal()" class="btn tool-btn regex-btn">
+                    <i class="fas fa-code"></i> Test Regex
+                </button>
+                
+                <button onclick="showFeatureMsg('PDA')" class="btn tool-btn pda-btn">
+                    <i class="fas fa-layer-group"></i> PDA (Stack)
+                </button>
+                <button onclick="showFeatureMsg('Turing Machine')" class="btn tool-btn tm-btn">
+                    <i class="fas fa-tape"></i> Turing Machine
+                </button>
+
+                <button onclick="undo()" class="btn tool-btn undo-btn">
+                    <i class="fas fa-undo"></i> Undo
+                </button>
+                <button onclick="openVerifierModal()" class="btn tool-btn verify-btn">
+    <i class="fas fa-check-double"></i> Verify FA = RE
+</button>
+                <button onclick="clearCanvas()" class="btn clear-btn">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+
+            <div class="simulation-box">
+                <h3>Simulation</h3>
+                <input type="text" id="inputString" placeholder="Enter string (e.g. aba)">
+                <button id="runBtn" class="btn run-btn">
+                    <i class="fas fa-cogs"></i> Run Check
+                </button>
+                <div id="resultMsg" class="result-box">Waiting...</div>
+            </div>
+        </div>
+
+        <div class="canvas-area">
+            <canvas id="myCanvas" width="900" height="600"></canvas>
+            <div class="instructions">
+                <i class="fas fa-info-circle"></i> Select tool &rarr; Click on Canvas
+            </div>
+        </div>
+    </div>
+
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Add Transition</h3>
+            <p>Enter symbol (e.g. a, bb, 01)</p>
+            <input type="text" id="modalInput" placeholder="Type here...">
+            <div class="modal-buttons">
+                <button onclick="confirmTransition()" class="confirm-btn">Add</button>
+                <button onclick="closeModal()" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="regexModal" class="modal-overlay">
+        <div class="modal-content" style="width: 400px;">
+            <h3><i class="fas fa-magic"></i> Regex Tester</h3>
+            <p style="text-align: left; color: #aaa; font-size: 12px; margin-bottom: 5px;">1. Enter Regex (Use + for OR)</p>
+            <input type="text" id="reInput" placeholder="Enter RE (e.g. a+b)">
+            <p style="text-align: left; color: #aaa; font-size: 12px; margin-bottom: 5px;">2. Enter String</p>
+            <input type="text" id="reStringInput" placeholder="Enter String">
+            <h4 id="reResult" style="margin: 15px 0; min-height: 25px;">Result: Waiting...</h4>
+            <div class="modal-buttons">
+                <button onclick="checkRegex()" class="confirm-btn">Check</button>
+                <button onclick="closeRegexModal()" class="cancel-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdaModal" class="modal-overlay">
+        <div class="modal-content" style="width: 450px;">
+            <h3><i class="fas fa-layer-group"></i> PDA Simulator</h3>
+            <p style="color: #aaa; font-size: 12px; margin-bottom: 10px;">Logic: Accept aⁿbⁿ (Equal 'a' then Equal 'b')</p>
+            <input type="text" id="pdaInput" placeholder="Enter string (e.g. aaabbb)">
+            <div id="stackContainer" class="stack-box">
+                <div class="stack-placeholder">Stack Empty</div>
+            </div>
+            <h4 id="pdaResult" style="margin: 15px 0;">Result: Waiting...</h4>
+            <div class="modal-buttons">
+                <button onclick="runPDA()" class="confirm-btn">Simulate Stack</button>
+                <button onclick="closeFeatureModals()" class="cancel-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tmModal" class="modal-overlay">
+        <div class="modal-content" style="width: 600px;">
+            <h3><i class="fas fa-tape"></i> Turing Machine</h3>
+            <p style="color: #aaa; font-size: 12px; margin-bottom: 10px;">Logic: Bit Flipper (Change 0 to 1, 1 to 0)</p>
+            <input type="text" id="tmInput" placeholder="Enter Bits (e.g. 10101)">
+            <div class="tape-window">
+                <div id="tapeContainer" class="tape-strip"></div>
+                <div class="tape-head"><i class="fas fa-caret-up"></i> HEAD</div>
+            </div>
+            <h4 id="tmResult" style="margin: 15px 0;">Status: Ready</h4>
+            <div class="modal-buttons">
+                <button onclick="runTM()" class="confirm-btn" style="background: #00d2ff;">Run Tape</button>
+                <button onclick="closeFeatureModals()" class="cancel-btn">Close</button>
+            </div>
+        </div>
+    </div>
+    <div id="verifyModal" class="modal-overlay">
+    <div class="modal-content" style="width: 450px;">
+        <h3><i class="fas fa-check-double"></i> Equivalence Checker</h3>
+        <p style="color: #aaa; font-size: 12px;">Check if your Drawing matches your Regex.</p>
+        
+        <p style="text-align: left; margin-top: 15px;">Enter Regular Expression:</p>
+        <input type="text" id="verifyInput" placeholder="e.g. (a+b)*b">
+        
+        <div id="verifyResult" class="result-box" style="margin-top: 15px;">Waiting for Input...</div>
+
+        <div class="modal-buttons">
+            <button onclick="runVerification()" class="confirm-btn">Verify Match</button>
+            <button onclick="closeVerifierModal()" class="cancel-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+/* --- GLOBAL SETTINGS --- */
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #0f0f13;
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* --- MAIN CONTAINER (Height increased to 95%) --- */
+.main-container {
+    display: flex;
+    width: 95%; 
+    height: 95vh; /* <--- YAHAN CHANGE KIYA (Bada kar diya) */
+    background: rgba(25, 25, 35, 0.6);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 280px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px; /* Padding thodi kam ki */
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    height: 100%;
+}
+
+/* --- TITLE --- */
+.brand-title {
+    font-size: 26px; /* Font thoda chota kiya taake jagah bache */
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 0 15px #00c6ff, 0 0 30px #0072ff;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 10px; /* Margin kam kiya */
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+}
+
+/* --- BUTTONS AREA (Compact) --- */
+.tools {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* <--- GAP KAM KIYA (Pehle 12px tha) */
+    flex-grow: 1;
+    overflow-y: auto; /* Agar screen bohot choti ho to scroll aa jaye */
+}
+
+.btn {
+    width: 100%;
+    padding: 10px; /* <--- BUTTON PATLA KIYA (Pehle 12px tha) */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+}
+
+.btn i { font-size: 15px; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+
+/* --- COLORS --- */
+.state-btn { background: linear-gradient(45deg, #3a7bd5, #3a6073); }
+.arrow-btn { background: linear-gradient(45deg, #f1c40f, #f39c12); color: black; }
+.start-btn { background: linear-gradient(45deg, #11998e, #38ef7d); }
+.final-btn { background: linear-gradient(45deg, #cb2d3e, #ef473a); }
+.trap-btn  { background: linear-gradient(45deg, #7f8c8d, #95a5a6); } /* Reject Button */
+.regex-btn { background: linear-gradient(45deg, #ff00cc, #333399); } /* Stylish Pink-Blue */
+
+
+.undo-btn { 
+    background: linear-gradient(45deg, #8e44ad, #9b59b6);
+    margin-top: 5px; 
+}
+
+.clear-btn { 
+    background: linear-gradient(45deg, #ff416c, #ff4b2b); 
+    box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+}
+/* Verify Button (Gold Color) */
+.verify-btn { 
+    background: linear-gradient(45deg, #FFD700, #ffb347); 
+    color: black; 
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* --- SIMULATION BOX (FIXED AT BOTTOM) --- */
+.simulation-box {
+    margin-top: auto; 
+    padding-top: 15px;
+    border-top: 1px solid #333;
+    flex-shrink: 0; /* Isay shrink hone se roka */
+}
+
+.simulation-box h3 { font-size: 13px; color: #ccc; margin-bottom: 5px; }
+
+input[type="text"] {
+    width: 100%; padding: 8px; /* Input thoda chota kiya */
+    background: #222; border: 1px solid #444; color: white;
+    border-radius: 6px; margin-bottom: 8px;
+    text-align: center;
+}
+
+.run-btn { 
+    background: linear-gradient(90deg, #8E2DE2, #4A00E0); 
+    padding: 10px; margin-bottom: 8px;
+    justify-content: center;
+}
+
+.result-box {
+    padding: 8px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 12px;
+    min-height: 35px;
+    display: flex; justify-content: center; align-items: center;
+}
+
+/* --- CANVAS & MODAL (Same as before) --- */
+.canvas-area {
+    flex-grow: 1;
+    background-color: #15151e;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    position: relative;
+    cursor: crosshair;
+}
+.instructions {
+    position: absolute; bottom: 10px; right: 20px;
+    color: rgba(255,255,255,0.3); font-size: 12px;
+}
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); display: none;
+    justify-content: center; align-items: center; z-index: 100;
+    backdrop-filter: blur(5px);
+}
+.modal-content {
+    background: #1e1e2e; padding: 30px; border-radius: 15px;
+    text-align: center; width: 320px; border: 1px solid #444;
+}
+.modal-content input {
+    width: 100%; padding: 12px; margin: 20px 0;
+    background: #111; border: 1px solid #555; color: white;
+    font-size: 20px; text-align: center; border-radius: 8px;
+}
+.confirm-btn { background: #2ecc71; padding: 10px 20px; border: none; border-radius: 5px; color: white; cursor: pointer; }
+.cancel-btn { background: #e74c3c; padding: 10px 20px; border: none; border-radius: 5px; color: white; cursor: pointer; margin-left: 10px;}
+
+/* --- PDA STACK DESIGN --- */
+.pda-btn { background: linear-gradient(45deg, #ff9966, #ff5e62); }
+
+.stack-box {
+    width: 120px;
+    height: 180px;
+    border-left: 4px solid rgba(255,255,255,0.3);
+    border-right: 4px solid rgba(255,255,255,0.3);
+    border-bottom: 4px solid rgba(255,255,255,0.3);
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column-reverse; /* Neeche se bharega */
+    align-items: center;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    overflow-y: hidden;
+    position: relative;
+}
+
+.stack-item {
+    width: 90%;
+    height: 30px;
+    background: #ff9966;
+    color: black;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    display: flex; justify-content: center; align-items: center;
+    animation: dropIn 0.4s ease;
+    box-shadow: 0 0 10px #ff9966;
+}
+
+@keyframes dropIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- TURING MACHINE TAPE DESIGN --- */
+.tm-btn { background: linear-gradient(45deg, #00d2ff, #3a7bd5); }
+
+.tape-window {
+    width: 100%;
+    overflow: hidden; /* Sirf itna hissa dikhega */
+    background: #111;
+    padding: 20px 0;
+    margin: 20px 0;
+    border-radius: 10px;
+    border: 2px solid #444;
+    position: relative;
+}
+
+.tape-strip {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    transition: transform 0.3s ease; /* Smooth sliding movement */
+}
+
+.tape-cell {
+    min-width: 40px;
+    height: 40px;
+    background: #333;
+    border: 1px solid #555;
+    color: white;
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 4px;
+}
+
+.tape-cell.active {
+    background: #00d2ff;
+    color: black;
+    box-shadow: 0 0 15px #00d2ff;
+    transform: scale(1.1);
+}
+
+.tape-head {
+    text-align: center;
+    color: #00d2ff;
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
